@@ -1,11 +1,13 @@
 package main
 
 import (
-  "net"
   "fmt"
-  "sync"
+  "net"
+  "strconv"
+  "encoding/gob"
+  "github.com/orcaman/concurrent-map"
 )
-import "encoding/gob"
+//"sync"
 
 // TODO incorporate this https://medium.com/@lhartikk/a-blockchain-in-200-lines-of-code-963cc1cc0e54
 
@@ -15,10 +17,12 @@ type my_packet struct {
   Res int
 }
 
-var bet_map sync.Map
+var (
+  bet_map = cmap.New()
+)
 
 func main() {
-  // execute_commands("ls && ls -alh")
+
 
   fmt.Println("start");
   ln, err := net.Listen("tcp", ":8081")
@@ -43,15 +47,14 @@ func main() {
     total_connections++
   }
 
-  // TODO: Figure out this range stuff
-  // for x, _ := bet_map.Range() {
-  //
-  //
-  // }
+  // https://github.com/orcaman/concurrent-map
+  // https://github.com/orcaman/concurrent-map/blob/master/concurrent_map_test.go
+  for item := range bet_map.IterBuffered() {
+      val := item.Val
+  }
+
 
 }
-
-
 
 func listen_packet(conn net.Conn) {
 
@@ -61,7 +64,9 @@ func listen_packet(conn net.Conn) {
 
   if err != nil { fmt.Println("Tell me about it") }
 
-  bet_map.Store(p.Key, p)
+  key := strconv.Itoa(int(p.Key))
+
+  bet_map.Set(key, p)
 
   conn.Write([]byte("liftoff"))
 
