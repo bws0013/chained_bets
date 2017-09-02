@@ -7,6 +7,7 @@ import (
   "encoding/gob"
   "github.com/orcaman/concurrent-map"
   "sync"
+  "time"
 )
 //"sync"
 
@@ -36,25 +37,38 @@ func main() {
   total_connections := 0
 
   var wg sync.WaitGroup
-  wg.Add(2)
+  cont := true
+
+  timer2 := time.NewTimer(time.Second * 15)
+  go func() {
+      <-timer2.C
+      cont = false
+  }()
+
   for {
     conn, err := ln.Accept() // this blocks until connection or error
     if err != nil {
         fmt.Println("This connection needs a tissue, skipping!")
         continue
     }
+
+    wg.Add(1)
     go func() {
       defer wg.Done()
       listen_packet(conn)
     }()
 
+    if cont == false {
+      break
+    }
+
     total_connections++
     fmt.Println("Connection: ", total_connections)
 
-    if total_connections >= 2 {
-      wg.Wait()
-      break
-    }
+    // if total_connections >= 2 {
+    //   wg.Wait()
+    //   break
+    // }
 
   }
 
