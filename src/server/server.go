@@ -6,6 +6,7 @@ import (
   "strconv"
   "encoding/gob"
   "github.com/orcaman/concurrent-map"
+  "sync"
 )
 //"sync"
 
@@ -34,23 +35,34 @@ func main() {
 
   total_connections := 0
 
+  var wg sync.WaitGroup
+  wg.Add(2)
   for {
-    if total_connections > 2 {
-      break
-    }
     conn, err := ln.Accept() // this blocks until connection or error
     if err != nil {
         fmt.Println("This connection needs a tissue, skipping!")
         continue
     }
-    go listen_packet(conn) // a goroutine handles conn so that the loop can accept other connections
+    go func() {
+      defer wg.Done()
+      listen_packet(conn)
+    }()
+
     total_connections++
+    fmt.Println("Connection: ", total_connections)
+
+    if total_connections >= 2 {
+      wg.Wait()
+      break
+    }
+
   }
 
   // https://github.com/orcaman/concurrent-map
   // https://github.com/orcaman/concurrent-map/blob/master/concurrent_map_test.go
   for item := range bet_map.IterBuffered() {
       val := item.Val
+      fmt.Println(val)
   }
 
 

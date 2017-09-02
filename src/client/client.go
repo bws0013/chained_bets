@@ -3,8 +3,6 @@ package main
 import (
   "net"
   "fmt"
-  "os"
-  "io/ioutil"
   "encoding/gob"
   "bufio"
   "math/rand"
@@ -26,7 +24,9 @@ func main() {
   b := float32(10)
   r := rand.Intn(2)
 
-  fmt.Println(my_packet{k, b, r})
+  packet := my_packet{k, b, r}
+
+  dial_server_packet(packet)
 }
 
 func dial_server_packet(packet my_packet) {
