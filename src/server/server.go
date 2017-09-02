@@ -6,7 +6,6 @@ import (
   "strconv"
   "encoding/gob"
   "github.com/orcaman/concurrent-map"
-  "sync"
   "time"
 )
 //"sync"
@@ -25,7 +24,6 @@ var (
 
 func main() {
 
-
   fmt.Println("start");
   ln, err := net.Listen("tcp", ":8081")
   // check_err(err, "Listening!")
@@ -36,40 +34,30 @@ func main() {
 
   total_connections := 0
 
-  var wg sync.WaitGroup
   cont := true
 
-  timer2 := time.NewTimer(time.Second * 15)
+  timer2 := time.NewTimer(time.Second * 60)
   go func() {
       <-timer2.C
       cont = false
+      send_close_packet()
   }()
 
   for {
-    conn, err := ln.Accept() // this blocks until connection or error
-    if err != nil {
-        fmt.Println("This connection needs a tissue, skipping!")
-        continue
-    }
-
-    wg.Add(1)
-    go func() {
-      defer wg.Done()
-      listen_packet(conn)
-    }()
-
     if cont == false {
       break
     }
 
+    conn, err := ln.Accept()
+    if err != nil {
+        fmt.Println("This connection needs a tissue, skipping!")
+    }
+    go func() {
+      listen_packet(conn)
+    }()
+
     total_connections++
     fmt.Println("Connection: ", total_connections)
-
-    // if total_connections >= 2 {
-    //   wg.Wait()
-    //   break
-    // }
-
   }
 
   // https://github.com/orcaman/concurrent-map
@@ -78,8 +66,10 @@ func main() {
       val := item.Val
       fmt.Println(val)
   }
+}
 
-
+func hw() {
+  fmt.Println("hello world!")
 }
 
 func listen_packet(conn net.Conn) {
@@ -102,5 +92,12 @@ func listen_packet(conn net.Conn) {
     fmt.Printf("Client disconnected.\n")
     return
   }
+}
 
+func send_close_packet() {
+  packet := my_packet{0, 0.0, 0}
+  conn, _ := net.Dial("tcp", "127.0.0.1:8081")
+  encoder := gob.NewEncoder(conn)
+  _ = encoder.Encode(&packet)
+  conn.Close()
 }
