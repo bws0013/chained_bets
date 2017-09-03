@@ -11,7 +11,7 @@ import (
 
 // TODO incorporate this https://medium.com/@lhartikk/a-blockchain-in-200-lines-of-code-963cc1cc0e54
 
-type my_packet struct {
+type bet_packet struct {
   Key int32
   Bet float32
   Res int
@@ -24,12 +24,12 @@ func main() {
   b := float32(10)
   r := rand.Intn(2)
 
-  packet := my_packet{k, b, r}
+  packet := bet_packet{k, b, r}
 
   dial_server_packet(packet)
 }
 
-func dial_server_packet(packet my_packet) {
+func dial_server_packet(packet bet_packet) {
   conn, err := net.Dial("tcp", "127.0.0.1:8081")
 
   if err != nil {
