@@ -4,11 +4,13 @@ import (
   "fmt"
 )
 
+// Get the 'winning' state. Change later when live
 func get_result() int {
   // Add result condition stuff later
   return 0
 }
 
+// Prints winners along with the winners address. Change later when live
 func distribute_winnings(winning_state int, win_multiple float32) {
   var winnings_list []string
   if win_multiple == 0 {
@@ -20,10 +22,9 @@ func distribute_winnings(winning_state int, win_multiple float32) {
   for _, w := range winnings_list {
     fmt.Println(w)
   }
-
 }
 
-
+// Returns a list of the bets to be sent to the winners
 func calc_winnings_amount(winning_state int, win_multiple float32) []string {
   var winnings_list []string
   bets := organize_bets()
@@ -47,6 +48,7 @@ func calc_winnings_amount(winning_state int, win_multiple float32) []string {
   return winnings_list
 }
 
+// Returns a list of the bets to be returned to their original owner
 func return_all_bets() []string {
   var winnings_list []string
   bets := organize_bets()
@@ -58,6 +60,7 @@ func return_all_bets() []string {
   return winnings_list
 }
 
+// Determines what to multiply each winning bet by for the return
 func calc_winnings_multiple(winning_state int) float32 {
   state_map, total := bets_per_state()
   total_winning_bet_amount := state_map[winning_state]
@@ -66,8 +69,7 @@ func calc_winnings_multiple(winning_state int) float32 {
   return win_multiple
 }
 
-// collect the bets and find the amount of bets for each state
-// start with 2 states 0/1
+// returns the amount bet per state as well as the total bet
 func bets_per_state() (map[int]float32, float32) {
   state_map := make(map[int]float32)
   bets := organize_bets()
@@ -86,12 +88,16 @@ func bets_per_state() (map[int]float32, float32) {
 }
 
 // *****Print functions*****
+
+// print all of the bets we have recieved
 func print_items() {
   for item := range bet_map.IterBuffered() {
     val := item.Val
     fmt.Println(val)
   }
 }
+
+// print all of the results of the amount bet per state
 func print_state_map() {
   state_map, total := bets_per_state()
   for k, v := range state_map {

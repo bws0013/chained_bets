@@ -9,8 +9,6 @@ import (
   "time"
 )
 
-// TODO incorporate this https://medium.com/@lhartikk/a-blockchain-in-200-lines-of-code-963cc1cc0e54
-
 type bet_packet struct {
   Key int32
   Bet float32
@@ -18,6 +16,7 @@ type bet_packet struct {
 }
 
 func main() {
+  // Generate random number to send as id
   rand.Seed(time.Now().UTC().UnixNano())
 
   k := rand.Int31() + 1 // x>0
@@ -29,6 +28,7 @@ func main() {
   dial_server_packet(packet)
 }
 
+// Send packet
 func dial_server_packet(packet bet_packet) {
   conn, err := net.Dial("tcp", "127.0.0.1:8081")
 
@@ -36,7 +36,6 @@ func dial_server_packet(packet bet_packet) {
     fmt.Println("Unable to send!")
     return
   }
-  // fmt.Println(packet)
   encoder := gob.NewEncoder(conn)
   err = encoder.Encode(&packet)
 
@@ -47,6 +46,7 @@ func dial_server_packet(packet bet_packet) {
 
 }
 
+// Print out if there is an error
 func check_err(err error, message string) {
     if err != nil {
       panic(err)

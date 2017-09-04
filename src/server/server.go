@@ -8,9 +8,7 @@ import (
   "encoding/gob"
   "github.com/orcaman/concurrent-map"
 )
-//"sync"
 
-// TODO incorporate this https://medium.com/@lhartikk/a-blockchain-in-200-lines-of-code-963cc1cc0e54
 
 type bet_packet struct {
   Key int32
@@ -19,8 +17,8 @@ type bet_packet struct {
 }
 
 var (
-  bet_map = cmap.New()
-  timer_time = time.Duration(10)
+  bet_map = cmap.New() // Global map we store bets in
+  timer_time = time.Duration(10) // Amount of seconds betting is open for
 )
 
 func main() {
@@ -40,6 +38,7 @@ func main() {
 
 }
 
+// Return a list of the bets that were made
 func organize_bets() []bet_packet {
   bets := []bet_packet{}
   for item := range bet_map.IterBuffered() {
@@ -52,6 +51,8 @@ func organize_bets() []bet_packet {
   return bets
 }
 
+// Open the connecion and wait on people to send in bets
+// Close after the timer runs out
 func collect_bets() {
   fmt.Println("start");
   ln, err := net.Listen("tcp", ":8081")
@@ -60,7 +61,6 @@ func collect_bets() {
     fmt.Println("Error at listen")
     return
   }
-
   cont := true
   timer2 := time.NewTimer(time.Second * timer_time)
   go func() {
@@ -68,14 +68,14 @@ func collect_bets() {
       cont = false
       send_close_packet()
   }()
-  for {
-    if cont == false { break }
+  for cont == true {
     conn, err := ln.Accept()
     if err != nil { fmt.Println("This connection needs a tissue, skipping!") }
     go func() { listen_packet(conn) }()
   }
 }
 
+// Listen for packets
 func listen_packet(conn net.Conn) {
   dec := gob.NewDecoder(conn)
   p := &bet_packet{}
@@ -90,6 +90,7 @@ func listen_packet(conn net.Conn) {
   }
 }
 
+// Send a packet to ensure we close at the right time
 func send_close_packet() {
   packet := bet_packet{0, 0.0, 0}
   conn, _ := net.Dial("tcp", "127.0.0.1:8081")
