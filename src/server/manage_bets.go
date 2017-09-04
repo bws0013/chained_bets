@@ -20,15 +20,22 @@ func bets_per_state() {
 
   bets := organize_bets()
 
-  for _, bet := range bets {
+  total := float32(0)
 
+  for _, bet := range bets {
     if val, ok := state_map[bet.Res]; ok {
       current_amount := val
       current_amount += bet.Bet
       state_map[bet.Res] = current_amount
+    } else {
+      state_map[bet.Res] = bet.Bet
     }
-
+    total += bet.Bet
   }
 
+  for k, v := range state_map {
+    fmt.Println(k, "->", v)
+  }
+  fmt.Println("Total:", total)
 
 }

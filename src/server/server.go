@@ -27,12 +27,9 @@ func main() {
 
   collect_bets()
 
-  // for item := range bet_map.IterBuffered() {
-  //     val := item.Val
-  //     fmt.Println(val)
-  // }
+  //pr()
 
-  pr()
+  bets_per_state()
 
 }
 
@@ -40,7 +37,9 @@ func organize_bets() []bet_packet {
   bets := []bet_packet{}
   for item := range bet_map.IterBuffered() {
     val := item.Val
-    bets = append(bets, val.(bet_packet))
+
+    packet := val.(*bet_packet)
+    bets = append(bets, *packet)
   }
   return bets
 }
