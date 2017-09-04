@@ -9,33 +9,53 @@ func get_result() int {
   return 0
 }
 
-func calc_winnings_amount(winning_state int, win_multiple float32) {
-
+func distribute_winnings(winning_state int, win_multiple float32) {
+  var winnings_list []string
   if win_multiple == 0 {
-    return_all_bets()
-    return
+    winnings_list = return_all_bets()
+  } else {
+    winnings_list = calc_winnings_amount(winning_state, win_multiple)
   }
 
-  // bets := organize_bets()
-
-
-
+  for _, w := range winnings_list {
+    fmt.Println(w)
+  }
 
 }
 
-/*
-type bet_packet struct {
-  Key int32
-  Bet float32
-  Res int
-}
-*/
 
-func return_all_bets() {
+func calc_winnings_amount(winning_state int, win_multiple float32) []string {
+  var winnings_list []string
+  bets := organize_bets()
+  _, total := bets_per_state()
+
+  for _, bet := range bets {
+    if bet.Res == winning_state {
+      total_winning_est := bet.Bet * win_multiple
+
+      if total_winning_est > total {
+        winnings_string := fmt.Sprintf("%f -> %d", total, bet.Key)
+        winnings_list = append(winnings_list, winnings_string)
+        total = 0
+      } else {
+        winnings_string := fmt.Sprintf("%f -> %d", total_winning_est, bet.Key)
+        winnings_list = append(winnings_list, winnings_string)
+        total -= total_winning_est
+      }
+    }
+  }
+  return winnings_list
+}
+
+func return_all_bets() []string {
+  var winnings_list []string
   bets := organize_bets()
   for _, bet := range bets {
-    fmt.Println(bet.Bet, "->", bet.Key)
+    winnings_string := fmt.Sprintf("%f -> %s", bet.Bet, bet.Key)
+    winnings_list = append(winnings_list, winnings_string)
   }
+
+  return winnings_list
 }
 
 func calc_winnings_multiple(winning_state int) float32 {

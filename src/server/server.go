@@ -34,9 +34,9 @@ func main() {
   print_state_map()
 
   winning_state := get_result()
-
   mult := calc_winnings_multiple(winning_state)
-  calc_winnings_amount(winning_state, mult)
+
+  distribute_winnings(winning_state, mult)
 
 }
 
