@@ -20,7 +20,7 @@ type bet_packet struct {
 func main() {
   rand.Seed(time.Now().UTC().UnixNano())
 
-  k := rand.Int31()
+  k := rand.Int31() + 1 // x>0
   b := float32(10)
   r := rand.Intn(2)
 

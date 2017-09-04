@@ -29,7 +29,14 @@ func main() {
 
   //pr()
 
-  bets_per_state()
+  // bps := bets_per_state()
+  print_items()
+  print_state_map()
+
+  winning_state := get_result()
+
+  mult := calc_winnings_multiple(winning_state)
+  calc_winnings_amount(winning_state, mult)
 
 }
 
@@ -37,8 +44,9 @@ func organize_bets() []bet_packet {
   bets := []bet_packet{}
   for item := range bet_map.IterBuffered() {
     val := item.Val
-
     packet := val.(*bet_packet)
+
+    // We may want to if-statement this to remove any key of 0
     bets = append(bets, *packet)
   }
   return bets
