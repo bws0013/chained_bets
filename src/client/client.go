@@ -48,10 +48,6 @@ func dial_server_packet(packet bet_packet) {
 
 // Print out if there is an error
 func check_err(err error, message string) {
-    if err != nil {
-      panic(err)
-    }
-    if len(message) != 0 {
-      fmt.Printf("%s\n", message)
-    }
+    if err != nil { panic(err) }
+    if len(message) != 0 { fmt.Printf("%s\n", message) }
 }

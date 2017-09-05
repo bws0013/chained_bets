@@ -9,7 +9,6 @@ import (
   "github.com/orcaman/concurrent-map"
 )
 
-
 type bet_packet struct {
   Key int32
   Bet float32
@@ -18,24 +17,25 @@ type bet_packet struct {
 
 var (
   bet_map = cmap.New() // Global map we store bets in
-  timer_time = time.Duration(10) // Amount of seconds betting is open for
+  timer_time = time.Duration(5) // Amount of seconds betting is open for
 )
 
 func main() {
+  run_any_test(all_win_test)
 
+}
+
+func instance() {
   collect_bets()
-
   //pr()
-
   // bps := bets_per_state()
+
   print_items()
   print_state_map()
-
   winning_state := get_result()
   mult := calc_winnings_multiple(winning_state)
 
   distribute_winnings(winning_state, mult)
-
 }
 
 // Return a list of the bets that were made
@@ -46,7 +46,9 @@ func organize_bets() []bet_packet {
     packet := val.(*bet_packet)
 
     // We may want to if-statement this to remove any key of 0
-    bets = append(bets, *packet)
+    if packet.Key != 0 {
+      bets = append(bets, *packet)
+    }
   }
   return bets
 }
@@ -56,7 +58,6 @@ func organize_bets() []bet_packet {
 func collect_bets() {
   fmt.Println("start");
   ln, err := net.Listen("tcp", ":8081")
-  // check_err(err, "Listening!")
   if err != nil {
     fmt.Println("Error at listen")
     return
