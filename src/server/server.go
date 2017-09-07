@@ -22,13 +22,16 @@ var (
 
 func main() {
   run_any_test(all_win_test)
+  run_any_test(all_lost_test)
+}
 
+// Used exclusively for testing
+func restart_map() {
+  bet_map = cmap.New()
 }
 
 func instance() {
   collect_bets()
-  //pr()
-  // bps := bets_per_state()
 
   print_items()
   print_state_map()

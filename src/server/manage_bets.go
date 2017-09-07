@@ -53,7 +53,7 @@ func return_all_bets() []string {
   var winnings_list []string
   bets := organize_bets()
   for _, bet := range bets {
-    winnings_string := fmt.Sprintf("%f -> %s", bet.Bet, bet.Key)
+    winnings_string := fmt.Sprintf("%f -> %d", bet.Bet, bet.Key)
     winnings_list = append(winnings_list, winnings_string)
   }
 

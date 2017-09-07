@@ -23,18 +23,24 @@ import (
 //   dial_server_packet(packet)
 // }
 
+var wg sync.WaitGroup
+
 // Pass in the method we are testing for
 func run_any_test(test func()) {
-  var wg sync.WaitGroup
 
   wg.Add(1)
+  restart_map()
   go func() {
     defer wg.Done()
     instance()
+    time.Sleep(time.Second * 1)
   }()
   time.Sleep(time.Second * 1)
+
   test()
+
   wg.Wait()
+  fmt.Println("====================")
 }
 
 // test where all parties win
@@ -56,7 +62,19 @@ func all_win_test() {
 
 // test where all parties lose
 func all_lost_test() {
+  k1 := int32(1) // x>0
+  b1 := float32(10)
+  r1 := 1
 
+  k2 := int32(2) // x>0
+  b2 := float32(10)
+  r2 := 1
+
+  packet1 := bet_packet{k1, b1, r1}
+  packet2 := bet_packet{k2, b2, r2}
+
+  dial_server_packet(packet1)
+  dial_server_packet(packet2)
 }
 
 // test where someone wins and someone does not
