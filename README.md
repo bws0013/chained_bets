@@ -1,0 +1,3 @@
+I have been pretty into [Decentralized computing](https://en.wikipedia.org/wiki/Decentralized_computing) and [Blockchains](https://en.wikipedia.org/wiki/Blockchain) recently. I want to build a kind of smart contract that involves a 'bet' or claim involving webpages. For example betting team A wins over Team B by point to several webpages that will have the result and then checking them for the result and paying out based on those results. The easiest example is a sports bet but this is could also be used for things such as stock options. At the moment this is just backend golang but I want to put this on a decentralized network.
+
+### In progress
