@@ -21,17 +21,12 @@ var (
 )
 
 func main() {
-  run_any_test(all_win_test)
-  run_any_test(all_lost_test)
-}
-
-// Used exclusively for testing
-func restart_map() {
-  bet_map = cmap.New()
+  run_any_test(lost_of_packets_parallel_test)
 }
 
 func instance() {
   collect_bets()
+  send_close_packet()
 
   print_items()
   print_state_map()
@@ -39,6 +34,7 @@ func instance() {
   mult := calc_winnings_multiple(winning_state)
 
   distribute_winnings(winning_state, mult)
+  return
 }
 
 // Return a list of the bets that were made
@@ -77,6 +73,7 @@ func collect_bets() {
     if err != nil { fmt.Println("This connection needs a tissue, skipping!") }
     go func() { listen_packet(conn) }()
   }
+
 }
 
 // Listen for packets
