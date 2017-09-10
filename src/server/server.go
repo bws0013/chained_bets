@@ -21,7 +21,7 @@ var (
 )
 
 func main() {
-  run_any_test(lost_of_packets_parallel_test)
+  run_any_test(weird_distribution_test)
 }
 
 func instance() {

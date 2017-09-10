@@ -2,6 +2,8 @@ package main
 
 import (
   "fmt"
+  "math/rand"
+  "time"
 )
 
 // Get the 'winning' state. Change later when live
@@ -33,7 +35,6 @@ func calc_winnings_amount(winning_state int, win_multiple float32) []string {
   for _, bet := range bets {
     if bet.Res == winning_state {
       total_winning_est := bet.Bet * win_multiple
-
       if total_winning_est > total {
         winnings_string := fmt.Sprintf("%f -> %d", total, bet.Key)
         winnings_list = append(winnings_list, winnings_string)
@@ -45,6 +46,18 @@ func calc_winnings_amount(winning_state int, win_multiple float32) []string {
       }
     }
   }
+
+  // This bit handles what happens if not all of the bets have been distributed
+  rand.Seed(time.Now().UTC().UnixNano())
+  for total > 0 {
+    number_of_bets := int32(len(bets))
+    extra_winner := rand.Int31n(number_of_bets)
+    if bets[extra_winner].Key == 0 { continue }
+    winnings_string := fmt.Sprintf("%f -> %d", total, bets[extra_winner].Key)
+    winnings_list = append(winnings_list, winnings_string)
+    total = 0
+  }
+
   return winnings_list
 }
 
